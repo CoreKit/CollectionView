@@ -8,7 +8,7 @@
 
 import UIKit
 
-class CollectionViewController: UIViewController {
+open class CollectionViewController: UIViewController {
 
     @IBOutlet open weak var collectionView: UICollectionView!
     
