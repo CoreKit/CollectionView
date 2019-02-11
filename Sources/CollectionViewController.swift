@@ -8,7 +8,7 @@
 
 import UIKit
 
-class CollectionViewController: UIViewController {
+open class CollectionViewController: UIViewController {
 
     @IBOutlet open weak var collectionView: UICollectionView!
     
@@ -37,7 +37,7 @@ class CollectionViewController: UIViewController {
         ])
     }
     
-    override func viewDidLoad() {
+    open override func viewDidLoad() {
         super.viewDidLoad()
         
         self.view.backgroundColor = .white
