@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
     s.name             = 'CollectionView'
-    s.version          = '1.0.1'
+    s.version          = '1.0.2'
     s.summary          = 'CollectionViews with ease.'
     s.description      = <<-DESC
                             A view model framework around collection views.
