@@ -8,13 +8,13 @@
 
 import UIKit
 
-extension UIEdgeInsets {
-    init(all value: CGFloat) {
+public extension UIEdgeInsets {
+    public init(all value: CGFloat) {
         self.init(top: value, left: value, bottom: value, right: value)
     }
 }
 
-extension CGFloat {
+public extension CGFloat {
     
     public var evenRounded: CGFloat {
         var newValue = self.rounded(.towardZero)
