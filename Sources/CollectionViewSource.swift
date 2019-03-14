@@ -34,6 +34,17 @@ open class CollectionViewSource: NSObject {
         super.init()
     }
     
+    // MARK: - public helper functions
+    public static func build(with grid: Grid = Grid(),
+                      sections: [[CollectionViewViewModelProtocol]],
+                      callback: CollectionViewCallback? = nil) -> CollectionViewSource {
+
+        let sections = sections.map { items in
+            return CollectionViewSection(grid: grid, header: nil, footer: nil, items: items)
+        }
+        return CollectionViewSource(grid: grid, sections: sections, callback: callback)
+    }
+    
     public func add(_ section: CollectionViewSection) {
         self.sections.append(section)
     }

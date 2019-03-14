@@ -12,14 +12,42 @@ open class CollectionViewController: UIViewController {
 
     @IBOutlet open weak var collectionView: UICollectionView!
     
+    // MARK: - source
+
     open var source: CollectionViewSource? = nil {
         didSet {
             self.source?.register(itemsFor: self.collectionView)
-
+            
             self.collectionView.dataSource = self.source
             self.collectionView.delegate = self.source
         }
     }
+    
+    // MARK: - init
+
+    public init() {
+        super.init(nibName: nil, bundle: nil)
+        
+        self.initialize()
+    }
+
+    required public init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+        
+        self.initialize()
+    }
+    
+    public override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
+        super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
+        
+        self.initialize()
+    }
+    
+    open func initialize() {
+        // do nothing...
+    }
+    
+    // MARK: - view controller
 
     open override func loadView() {
         super.loadView()

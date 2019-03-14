@@ -34,3 +34,4 @@ open class CollectionViewSection {
         self.items.append(item)
     }
 }
+

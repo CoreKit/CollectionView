@@ -23,9 +23,11 @@ open class CollectionViewViewModel<Cell, Data>: CollectionViewViewModelProtocol 
     public var data: Data
     public var cell: CollectionViewCell.Type { return Cell.self }
     public var value: Any { return self.data }
+    public var callback: ((Data, IndexPath) -> Void)?
     
-    public init(_ data: Data) {
+    public init(_ data: Data, callback: ((Data, IndexPath) -> Void)? = nil) {
         self.data = data
+        self.callback = callback
         self.initialize()
     }
     
@@ -49,7 +51,8 @@ open class CollectionViewViewModel<Cell, Data>: CollectionViewViewModelProtocol 
         guard let data = data as? Data else {
             return
         }
-        return self.callback(data: data, indexPath: indexPath)
+        self.callback(data: data, indexPath: indexPath)
+        self.callback?(data, indexPath)
     }
     
     // MARK: - API
