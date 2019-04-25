@@ -10,23 +10,12 @@ import UIKit
 
 public extension UIEdgeInsets {
 
-    public init(all value: CGFloat) {
+    init(all value: CGFloat) {
         self.init(top: value, left: value, bottom: value, right: value)
     }
 
-    public init(horizontal: CGFloat, vertical: CGFloat) {
+    init(horizontal: CGFloat, vertical: CGFloat) {
         self.init(top: vertical, left: horizontal, bottom: vertical, right: horizontal)
-    }
-}
-
-public extension CGFloat {
-
-    public var evenRounded: CGFloat {
-        var newValue = self.rounded(.towardZero)
-        if newValue.truncatingRemainder(dividingBy: 2) == 1 {
-            newValue -= 1
-        }
-        return newValue
     }
 }
 

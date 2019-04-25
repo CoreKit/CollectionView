@@ -8,45 +8,42 @@
 
 import UIKit
 
-public extension Array {
-    
-    public func element(at index: Int) -> Element? {
-        return index < self.count && index >= 0 ? self[index] : nil
-    }
-}
 
-open class CollectionViewSource: NSObject {
+
+open class Source: NSObject {
     
     private var indexPathSelected = false
     
     open var grid: Grid
-    open var sections: [CollectionViewSection]
-    open var callback: CollectionViewCallback?
+    open var sections: [Section]
     
-    public init(grid: Grid = Grid(),
-                sections: [CollectionViewSection] = [],
-                callback: CollectionViewCallback? = nil) {
-        
+    public init(grid: Grid = Grid(), sections: [Section] = []) {
         self.grid = grid
         self.sections = sections
-        self.callback = callback
         
         super.init()
     }
     
-    // MARK: - public helper functions
-    public static func build(with grid: Grid = Grid(),
-                      sections: [[CollectionViewViewModelProtocol]],
-                      callback: CollectionViewCallback? = nil) -> CollectionViewSource {
-
+    public convenience init(grid: Grid = Grid(), _ sections: [[ViewModelProtocol]]) {
         let sections = sections.map { items in
-            return CollectionViewSection(grid: grid, header: nil, footer: nil, items: items)
+            return Section(grid: grid, header: nil, footer: nil, items: items)
         }
-        return CollectionViewSource(grid: grid, sections: sections, callback: callback)
+        self.init(grid: grid, sections: sections)
+    }
+
+    // MARK: - helpers
+    
+    public func add(_ section: Section) {
+        self.sections.append(section)
     }
     
-    public func add(_ section: CollectionViewSection) {
-        self.sections.append(section)
+    public func by<T, U>(id: String) -> ViewModel<T, U>? {
+        for section in self.sections {
+            if let viewModel: ViewModel<T, U> = section.by(id: id) {
+                return viewModel
+            }
+        }
+        return nil
     }
 
     // MARK: - section indexes
@@ -63,18 +60,18 @@ open class CollectionViewSource: NSObject {
     
     // MARK: - item helpers
     
-    public func itemAt(_ section: Int) -> CollectionViewSection? {
+    public func itemAt(_ section: Int) -> Section? {
         return self.sections.element(at: section)
     }
     
-    public func itemAt(_ indexPath: IndexPath) -> CollectionViewViewModelProtocol? {
+    public func itemAt(_ indexPath: IndexPath) -> ViewModelProtocol? {
         return self.itemAt(indexPath.section)?.items.element(at: indexPath.item)
     }
 
     // MARK: - view registration
     
     public func register(itemsFor collectionView: UICollectionView) {
-        
+
         for section in self.sections {
             section.header?.cell.register(itemFor: collectionView, kind: UICollectionView.elementKindSectionHeader)
             section.footer?.cell.register(itemFor: collectionView, kind: UICollectionView.elementKindSectionFooter)
@@ -86,7 +83,7 @@ open class CollectionViewSource: NSObject {
     }
 }
 
-extension CollectionViewSource: UICollectionViewDataSource {
+extension Source: UICollectionViewDataSource {
     
     public func numberOfSections(in collectionView: UICollectionView) -> Int {
         return self.sections.count
@@ -99,13 +96,14 @@ extension CollectionViewSource: UICollectionViewDataSource {
     private func collectionView(_ collectionView: UICollectionView,
                                 itemForIndexPath indexPath: IndexPath) -> UICollectionViewCell {
         guard
-            let data = self.itemAt(indexPath),
-            let item = data.cell.reuse(collectionView, indexPath: indexPath) as? CollectionViewCell
+            let view = collectionView as? CollectionView,
+            let viewModel = self.itemAt(indexPath),
+            let cell = viewModel.cell.reuse(collectionView, indexPath: indexPath) as? Cell
         else {
-            return CollectionViewCell.reuse(collectionView, indexPath: indexPath)
+            return Cell.reuse(collectionView, indexPath: indexPath)
         }
-        data.config(cell: item, data: data.value, indexPath: indexPath, grid: self.grid(indexPath.section))
-        return item
+        viewModel.config(cell: cell, collectionView: view, indexPath: indexPath, grid: self.grid(indexPath.section))
+        return cell
     }
     
     public func collectionView(_ collectionView: UICollectionView,
@@ -118,89 +116,51 @@ extension CollectionViewSource: UICollectionViewDataSource {
                                  viewForSupplementaryElementOfKind kind: String,
                                  at indexPath: IndexPath) -> UICollectionReusableView
     {
-        let grid = self.grid(indexPath.section)
         let section = self.itemAt(indexPath.section)
-        
+        var optionalViewModel: ViewModelProtocol?
         if kind == UICollectionView.elementKindSectionHeader {
-            guard
-                let section = section,
-                let data = section.header,
-                let cell = data.cell.reuse(collectionView,
-                                           indexPath: indexPath,
-                                           kind: UICollectionView.elementKindSectionHeader) as? CollectionViewCell
-            else {
-                return CollectionViewCell.reuse(collectionView, indexPath: indexPath)
-            }
-            data.config(cell: cell, data: data.value, indexPath: indexPath, grid: grid)
-            return cell
+            optionalViewModel = section?.header
         }
-        
         if kind == UICollectionView.elementKindSectionFooter {
-            guard
-                let section = section,
-                let data = section.footer,
-                let cell = data.cell.reuse(collectionView,
-                                           indexPath: indexPath,
-                                           kind: UICollectionView.elementKindSectionFooter) as? CollectionViewCell
-            else {
-                return CollectionViewCell.reuse(collectionView, indexPath: indexPath)
-            }
-            data.config(cell: cell, data: data.value, indexPath: indexPath, grid: grid)
-            return cell
+            optionalViewModel = section?.footer
         }
 
-        return CollectionViewCell.reuse(collectionView,
-                                        indexPath: indexPath,
-                                        kind: UICollectionView.elementKindSectionHeader)
+        guard
+            let viewModel = optionalViewModel,
+            let view = collectionView as? CollectionView,
+            let cell = viewModel.cell.reuse(collectionView,
+                                            indexPath: indexPath,
+                                            kind: kind) as? Cell
+        else {
+            return Cell.reuse(collectionView, indexPath: indexPath)
+        }
+        viewModel.config(cell: cell, collectionView: view, indexPath: indexPath, grid: self.grid(indexPath.section))
+        return cell
     }
-    
+
     public func collectionView(_ collectionView: UICollectionView,
                                viewForSupplementaryElementOfKind kind: String,
                                at indexPath: IndexPath) -> UICollectionReusableView {
         return self._collectionView(collectionView, viewForSupplementaryElementOfKind: kind, at: indexPath)
     }
-   
-    public func collectionView(_ collectionView: UICollectionView,
-                               canMoveItemAt indexPath: IndexPath) -> Bool
-    {
-        return false
-    }
-    
-    public func collectionView(_ collectionView: UICollectionView,
-                               moveItemAt sourceIndexPath: IndexPath,
-                               to destinationIndexPath: IndexPath) {
-        
-    }
 }
 
-extension CollectionViewSource: UICollectionViewDelegate {
+extension Source: UICollectionViewDelegate {
     
     func selectItem(at indexPath: IndexPath) {
-        guard let data = self.itemAt(indexPath), !self.indexPathSelected else {
+        guard !self.indexPathSelected else {
             return
         }
-        
-        //source
-        self.callback?(data.value, indexPath)
-        //section
-        self.itemAt(indexPath.section)?.callback?(data.value, indexPath)
-        //view-model
-        data.callback(data: data.value, indexPath: indexPath)
+        self.itemAt(indexPath)?.callback(indexPath: indexPath)
     }
     
     public func collectionView(_ collectionView: UICollectionView,
                                didSelectItemAt indexPath: IndexPath) {
         self.selectItem(at: indexPath)
     }
-    
-    public func collectionView(_ collectionView: UICollectionView,
-                               willDisplay cell: UICollectionViewCell,
-                               forItemAt indexPath: IndexPath) {
-
-    }
 }
 
-extension CollectionViewSource: UICollectionViewDelegateFlowLayout {
+extension Source: UICollectionViewDelegateFlowLayout {
     
     func grid(_ section: Int) -> Grid {
         return self.itemAt(section)?.grid ?? self.grid
@@ -209,12 +169,10 @@ extension CollectionViewSource: UICollectionViewDelegateFlowLayout {
     public func collectionView(_ collectionView: UICollectionView,
                                layout collectionViewLayout: UICollectionViewLayout,
                                sizeForItemAt indexPath: IndexPath) -> CGSize {
-        guard let data = self.itemAt(indexPath) else {
+        guard let viewModel = self.itemAt(indexPath) else {
             return .zero
         }
-        let grid = self.grid(indexPath.section)
-        
-        return data.size(data: data.value, indexPath: indexPath, grid: grid, view: collectionView)
+        return viewModel.size(collectionView: collectionView as! CollectionView, grid: self.grid(indexPath.section))
     }
     
     public func collectionView(_ collectionView: UICollectionView,
@@ -238,22 +196,18 @@ extension CollectionViewSource: UICollectionViewDelegateFlowLayout {
     public func collectionView(_ collectionView: UICollectionView,
                                layout collectionViewLayout: UICollectionViewLayout,
                                referenceSizeForHeaderInSection section: Int) -> CGSize {
-        guard let data = self.itemAt(section)?.header else {
+        guard let viewModel = self.itemAt(section)?.header else {
             return .zero
         }
-        let indexPath = IndexPath(item: -1, section: section)
-        let grid = self.grid(section)
-        return data.size(data: data.value, indexPath: indexPath, grid: grid, view: collectionView)
+        return viewModel.size(collectionView: collectionView as! CollectionView, grid: self.grid(section))
     }
     
     public func collectionView(_ collectionView: UICollectionView,
                                layout collectionViewLayout: UICollectionViewLayout,
                                referenceSizeForFooterInSection section: Int) -> CGSize {
-        guard let data = self.itemAt(section)?.footer else {
+        guard let viewModel = self.itemAt(section)?.footer else {
             return .zero
         }
-        let indexPath = IndexPath(item: -1, section: section)
-        let grid = self.grid(section)
-        return data.size(data: data.value, indexPath: indexPath, grid: grid, view: collectionView)
+        return viewModel.size(collectionView: collectionView as! CollectionView, grid: self.grid(section))
     }
 }

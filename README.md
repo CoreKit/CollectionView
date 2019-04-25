@@ -11,8 +11,8 @@ CollectionViews with ease!
 ### CocoaPods
 
 ```
-source 'https://github.com/CoreKit/CollectionView.git'
-pod 'CollectionView'
+source 'https://github.com/CoreKit/CocoaPods.git'
+pod 'CollectionView', '~> 2.0.0'
 ```
 
 
@@ -20,7 +20,7 @@ pod 'CollectionView'
 ### Carthage
 
 ```
-github "CoreKit/CollectionView" "1.0.0"
+github "CoreKit/CollectionView" "2.0.0"
 ```
 
 

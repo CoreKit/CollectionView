@@ -10,18 +10,7 @@ import UIKit
 
 open class CollectionViewController: UIViewController {
 
-    @IBOutlet open weak var collectionView: UICollectionView!
-    
-    // MARK: - source
-
-    open var source: CollectionViewSource? = nil {
-        didSet {
-            self.source?.register(itemsFor: self.collectionView)
-            
-            self.collectionView.dataSource = self.source
-            self.collectionView.delegate = self.source
-        }
-    }
+    @IBOutlet open weak var collectionView: CollectionView!
     
     // MARK: - init
 
@@ -47,28 +36,32 @@ open class CollectionViewController: UIViewController {
         // do nothing...
     }
     
-    // MARK: - view controller
-
-    open override func loadView() {
-        super.loadView()
-        
-        let collectionView = UICollectionView.init(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
-        collectionView.translatesAutoresizingMaskIntoConstraints = false
-        self.collectionView = collectionView
-        self.view.addSubview(self.collectionView)
-        
-        NSLayoutConstraint.activate([
+    open func layoutConstraints() -> [NSLayoutConstraint] {
+        return [
             self.collectionView.topAnchor.constraint(equalTo: self.view.topAnchor),
             self.collectionView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor),
             self.collectionView.leadingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.leadingAnchor),
             self.collectionView.trailingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.trailingAnchor),
-        ])
+        ]
+    }
+
+    // MARK: - view controller
+    
+    open override func loadView() {
+        super.loadView()
+        
+        let collectionView = CollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
+        collectionView.translatesAutoresizingMaskIntoConstraints = false
+        self.collectionView = collectionView
+        self.view.addSubview(self.collectionView)
+        NSLayoutConstraint.activate(self.layoutConstraints())
     }
     
      open override func viewDidLoad() {
         super.viewDidLoad()
         
         self.view.backgroundColor = .white
+
         self.collectionView.backgroundColor = .clear
         self.collectionView.alwaysBounceVertical = true
         self.collectionView.showsVerticalScrollIndicator = true

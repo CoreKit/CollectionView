@@ -8,7 +8,7 @@
 
 import UIKit
 
-open class CollectionViewCell: UICollectionViewCell {
+open class Cell: UICollectionViewCell {
     
     public override init(frame: CGRect) {
         super.init(frame: frame)
@@ -24,7 +24,7 @@ open class CollectionViewCell: UICollectionViewCell {
     
     open override func awakeFromNib() {
         super.awakeFromNib()
-        
+
         self.reset()
     }
     
