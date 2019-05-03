@@ -124,6 +124,7 @@
 				TargetAttributes = {
 					16B94D532211AC7400247232 = {
 						CreatedOnToolsVersion = 10.1;
+						LastSwiftMigration = 1020;
 					};
 				};
 			};
@@ -133,6 +134,7 @@
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
+				Base,
 			);
 			mainGroup = 16B94D4A2211AC7400247232;
 			productRefGroup = 16B94D552211AC7400247232 /* Products */;
@@ -314,7 +316,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.tiborbodecs.CollectionView;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
-				SWIFT_VERSION = 4.2;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -339,7 +341,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.tiborbodecs.CollectionView;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
-				SWIFT_VERSION = 4.2;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;

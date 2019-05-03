@@ -10,16 +10,19 @@ import UIKit
 
 open class CollectionViewController: UIViewController {
 
-    @IBOutlet open weak var collectionView: UICollectionView!
+    @IBOutlet open weak var collectionView: UICollectionView?
     
     // MARK: - source
 
     open var source: CollectionViewSource? = nil {
         didSet {
-            self.source?.register(itemsFor: self.collectionView)
+            guard let collectionView = self.collectionView else {
+                return
+            }
+            self.source?.register(itemsFor: collectionView)
             
-            self.collectionView.dataSource = self.source
-            self.collectionView.delegate = self.source
+            collectionView.dataSource = self.source
+            collectionView.delegate = self.source
         }
     }
     
@@ -55,13 +58,13 @@ open class CollectionViewController: UIViewController {
         let collectionView = UICollectionView.init(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         self.collectionView = collectionView
-        self.view.addSubview(self.collectionView)
+        self.view.addSubview(collectionView)
         
         NSLayoutConstraint.activate([
-            self.collectionView.topAnchor.constraint(equalTo: self.view.topAnchor),
-            self.collectionView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor),
-            self.collectionView.leadingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.leadingAnchor),
-            self.collectionView.trailingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.trailingAnchor),
+            collectionView.topAnchor.constraint(equalTo: self.view.topAnchor),
+            collectionView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor),
+            collectionView.leadingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.leadingAnchor),
+            collectionView.trailingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.trailingAnchor),
         ])
     }
     
@@ -69,9 +72,9 @@ open class CollectionViewController: UIViewController {
         super.viewDidLoad()
         
         self.view.backgroundColor = .white
-        self.collectionView.backgroundColor = .clear
-        self.collectionView.alwaysBounceVertical = true
-        self.collectionView.showsVerticalScrollIndicator = true
+        self.collectionView?.backgroundColor = .clear
+        self.collectionView?.alwaysBounceVertical = true
+        self.collectionView?.showsVerticalScrollIndicator = true
     }
 
     open override func didReceiveMemoryWarning() {
@@ -95,8 +98,8 @@ open class CollectionViewController: UIViewController {
             return
         }
         
-        self.collectionView.collectionViewLayout.invalidateLayout()
-        self.collectionView.reloadData()
+        self.collectionView?.collectionViewLayout.invalidateLayout()
+        self.collectionView?.reloadData()
     }
     
     open override func viewWillTransition(to size: CGSize,
@@ -104,14 +107,14 @@ open class CollectionViewController: UIViewController {
         
         super.viewWillTransition(to: size, with: coordinator)
         
-        self.collectionView.collectionViewLayout.invalidateLayout()
-        self.collectionView.bounds.size = size
+        self.collectionView?.collectionViewLayout.invalidateLayout()
+        self.collectionView?.bounds.size = size
         
         coordinator.animate(alongsideTransition: { context in
             context.viewController(forKey: UITransitionContextViewControllerKey.from)
             
         }, completion: { [weak self] _ in
-            self?.collectionView.collectionViewLayout.invalidateLayout()
+            self?.collectionView?.collectionViewLayout.invalidateLayout()
         })
     }
 }
