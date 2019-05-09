@@ -80,9 +80,9 @@ open class CollectionViewController: UIViewController {
     open override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         
-        if self.isViewLoaded && self.view.window == nil {
-            self.collectionView = nil
-        }
+//        if self.isViewLoaded && self.view.window == nil {
+//            self.collectionView = nil
+//        }
     }
     
     // MARK: - handle autorotation
