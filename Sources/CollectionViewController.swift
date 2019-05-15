@@ -71,7 +71,7 @@ open class CollectionViewController: UIViewController {
         super.didReceiveMemoryWarning()
         
         if self.isViewLoaded && self.view.window == nil {
-            self.collectionView = nil
+            //self.collectionView = nil
         }
     }
     
