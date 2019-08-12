@@ -4,7 +4,7 @@
 //
 //  Created by Tibor Bödecs on 2019. 04. 25..
 //
-
+#if canImport(UIKit)
 import Foundation
 import UIKit
 
@@ -110,3 +110,4 @@ extension UICollectionViewCell {
         return collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: self.uniqueIdentifier, for: indexPath)
     }
 }
+#endif

@@ -4,7 +4,7 @@
 //
 //  Created by Tibor Bödecs on 2019. 04. 25..
 //
-
+#if canImport(UIKit)
 import Foundation
 import UIKit
 
@@ -19,3 +19,4 @@ open class CollectionView: UICollectionView {
         }
     }
 }
+#endif

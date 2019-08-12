@@ -5,7 +5,7 @@
 //  Created by Tibor Bödecs on 2018. 04. 11..
 //  Copyright © 2018. Tibor Bödecs. All rights reserved.
 //
-
+#if canImport(UIKit)
 import UIKit
 
 public protocol ViewModelProtocol {
@@ -94,3 +94,4 @@ open class ViewModel<View, Model>: ViewModelProtocol where View: Cell, Model: An
         return self.collectionView?.source?.by(id: id)
     }
 }
+#endif

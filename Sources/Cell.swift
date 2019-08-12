@@ -5,7 +5,7 @@
 //  Created by Tibor Bödecs on 2018. 04. 11..
 //  Copyright © 2018. Tibor Bödecs. All rights reserved.
 //
-
+#if canImport(UIKit)
 import UIKit
 
 open class Cell: UICollectionViewCell {
@@ -44,3 +44,4 @@ open class Cell: UICollectionViewCell {
         
     }
 }
+#endif
