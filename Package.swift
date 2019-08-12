@@ -3,13 +3,16 @@ import PackageDescription
 
 let package = Package(
     name: "CollectionView",
+    platforms: [
+       .iOS(.v12),
+    ],
     products: [
         .library(
             name: "CollectionView",
             targets: ["CollectionView"]),
     ],
     dependencies: [
-        
+
     ],
     targets: [
         .target(
