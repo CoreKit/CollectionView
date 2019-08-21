@@ -60,7 +60,7 @@ open class CollectionViewController: UIViewController {
      open override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.view.backgroundColor = .white
+        //self.view.backgroundColor = .white
 
         self.collectionView.backgroundColor = .clear
         self.collectionView.alwaysBounceVertical = true
