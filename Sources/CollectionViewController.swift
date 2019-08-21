@@ -81,13 +81,14 @@ open class CollectionViewController: UIViewController {
         super.traitCollectionDidChange(previousTraitCollection)
         
         guard
+            self.collectionView != nil,
             let previousTraitCollection = previousTraitCollection,
             self.traitCollection.verticalSizeClass != previousTraitCollection.verticalSizeClass ||
             self.traitCollection.horizontalSizeClass != previousTraitCollection.horizontalSizeClass
         else {
             return
         }
-        
+       
         self.collectionView.collectionViewLayout.invalidateLayout()
         self.collectionView.reloadData()
     }
@@ -97,6 +98,10 @@ open class CollectionViewController: UIViewController {
         
         super.viewWillTransition(to: size, with: coordinator)
         
+        guard self.collectionView != nil else {
+            return
+        }
+
         self.collectionView.collectionViewLayout.invalidateLayout()
         self.collectionView.bounds.size = size
         
