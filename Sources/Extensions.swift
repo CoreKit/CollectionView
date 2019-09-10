@@ -42,6 +42,9 @@ extension Array {
 extension CGFloat {
     
     var evenRounded: CGFloat {
+        guard self > 1 else {
+            return self
+        }
         var newValue = self.rounded(.towardZero)
         if newValue.truncatingRemainder(dividingBy: 2) == 1 {
             newValue -= 1
