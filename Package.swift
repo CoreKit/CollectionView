@@ -1,4 +1,4 @@
-// swift-tools-version:5.1
+// swift-tools-version:5.3
 import PackageDescription
 
 let package = Package(
@@ -7,20 +7,10 @@ let package = Package(
        .iOS(.v12),
     ],
     products: [
-        .library(
-            name: "CollectionView",
-            targets: ["CollectionView"]),
-    ],
-    dependencies: [
-
+        .library(name: "CollectionView", targets: ["CollectionView"]),
     ],
     targets: [
-        .target(
-            name: "CollectionView",
-            dependencies: [],
-            path: "./Sources"),
-        .testTarget(
-            name: "CollectionViewTests",
-            dependencies: ["CollectionView"]),
+        .target(name: "CollectionView"),
+        .testTarget(name: "CollectionViewTests", dependencies: ["CollectionView"]),
     ]
 )
